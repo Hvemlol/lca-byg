@@ -1,0 +1,6 @@
+openai>=1.50
+instructor>=1.4
+pdfplumber>=0.11
+pydantic>=2.9
+PyQt6>=6.7
+keyring>=25.0
