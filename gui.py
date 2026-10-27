@@ -13,6 +13,7 @@ from PyQt6.QtWidgets import (
     QMainWindow,
     QMessageBox,
     QPushButton,
+    QTabWidget,
     QTableWidget,
     QTableWidgetItem,
     QVBoxLayout,
@@ -22,6 +23,7 @@ from PyQt6.QtWidgets import (
 from db import get_connection, insert_epd, list_epds
 from models import EPDRecord
 from pipeline import extract_pdf
+from projects_tab import ProjectsTab
 from settings import clear_api_key, get_api_key, set_api_key
 
 DB_PATH = str(Path.home() / ".lca-byg" / "lca.db")
@@ -175,12 +177,17 @@ class MainWindow(QMainWindow):
         self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         self.table.horizontalHeader().setStretchLastSection(True)
 
-        layout = QVBoxLayout()
-        layout.addLayout(top_row)
-        layout.addWidget(self.table)
-        central = QWidget()
-        central.setLayout(layout)
-        self.setCentralWidget(central)
+        epds_page = QWidget()
+        epds_layout = QVBoxLayout(epds_page)
+        epds_layout.addLayout(top_row)
+        epds_layout.addWidget(self.table)
+
+        self.tabs = QTabWidget()
+        self.tabs.addTab(epds_page, "EPDs")
+        self.projects_tab = ProjectsTab(self.conn)
+        self.tabs.addTab(self.projects_tab, "Projects")
+
+        self.setCentralWidget(self.tabs)
 
         self.refresh_table()
 
